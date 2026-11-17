@@ -1,0 +1,5 @@
+root: ./
+
+structure:
+  readme: playground.md
+  summary: SUMMARY.md
