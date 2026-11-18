@@ -31,7 +31,7 @@ A key reaches the workspace's servers only if it holds the `mcp:execute` scope,
 and lists them only with `mcp:read`. A new key holds neither. While a key you
 can see in the workspace lacks `mcp:execute`, **Tools** → **MCP servers** says
 how many do, with a link to **API keys**, where you change a key under
-**Access**. See [Scopes](api-keys.md#scopes).
+**Access** → **Advanced scopes**. See [Scopes](api-keys.md#scopes).
 
 The top of the page says whether the server is **Shared** or **Personal**. To
 change that, or its name, URL, token or OAuth client, click **Settings** there
@@ -203,7 +203,7 @@ from the server's page: select the workspace in the top-left corner, go to
 
 The default policy applies to every key that no rule names.
 
-1. Under **Access rules**, find the **Default policy** row and click **Edit**.
+1. Under **Access rules**, open the menu on the **Default policy** row and choose **Edit**.
 2. Under **Action**, choose **Allow any tool** to keep the server open, or
    **Deny** to close it to every key you do not name in a rule. **Read tools
    only** and **Allow specific tools…** open part of it, as in a rule.

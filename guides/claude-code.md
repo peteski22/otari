@@ -5,7 +5,7 @@ Otari to put its requests under your budgets, usage tracking and traces.
 
 ## Route Claude Code through Otari
 
-1. On the dashboard's **API keys** page, create a key. Under **Advanced**, set
+1. On the dashboard's **API keys** page, create a key. Under **More options**, set
    **Mismatched `user` field** to **Always accept**. Claude Code puts its own
    telemetry value in that field, and a key left on the default refuses its
    requests with `403`. Spend still goes to the key's user; see
@@ -94,7 +94,8 @@ When the server uses each person's own account and you have not signed in yet:
 2. Claude answers with a sign-in link. Check that it starts with your
    deployment's `public_base_url` exactly, without a trailing `/` if it has
    one, followed by `/api/v1/mcp-connections/sign-in#ticket=`, then open it
-   within 30 minutes.
+   within 30 minutes. It works once: if the sign-in does not finish, ask again
+   for a new one.
    That address can differ from the one you send requests to; ask your operator
    if you do not know it. The page names the Otari user your account will
    be attached to: check that it is you, continue, and sign in with your own
@@ -156,7 +157,7 @@ In a Claude Code session:
 The install asks for the gateway URL and an API key. The key goes to Claude
 Code's secure storage. The URL must be `https` unless the gateway runs on the
 same machine. The plugin stays active in every session after that; its
-[README](https://github.com/mozilla-ai/otari/blob/145a3f6d99e8afda5e544c26c5271c7ebbd0cc4b/plugins/otari-router/README.md) has the options and how to update.
+[README](https://github.com/mozilla-ai/otari/blob/34e6eb30468eea22e7ead7dc8404537b7ee3aee2/plugins/otari-router/README.md) has the options and how to update.
 
 Each spawn then leaves a dim line in the transcript naming the model Otari chose
 and why. If Otari does not answer, the subagent starts on the model it would
@@ -275,8 +276,8 @@ otari import claude-code
 - Re-running imports only what is new.
 - Only token counts and identifiers are read, never prompts, completions or tool
   payloads.
-- Each session is labeled `<hostname>:<project>`, so you can group usage per
-  repository on the **Overview**.
+- Each session is labeled `<hostname>:<project>`, so the usage APIs can filter
+  usage per repository by session label.
 - The first event is sent on its own, so a rejection (an unknown user, a key that
   is not budget-exempt) shows before the rest is uploaded.
 

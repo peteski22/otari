@@ -37,12 +37,23 @@ A key can point at a compatible endpoint other than the provider's own, such as 
 
 The prefix is made from the key's name unless you enter one, and never changes once set, because your applications send it. A [routing policy](https://docs.otari.ai/reference/gateway/routing) or an alias can name the key by it too, for example to fall over from one key on the endpoint to another. To cap the key's spend, narrow a spend ceiling to its prefix, not to the provider. A key added without a base URL cannot gain one later: add a new key instead.
 
+The base URL comes from your organization, not from whoever runs the gateway, so it must reach public addresses only:
+
+- A host resolving to a private, loopback, link-local, shared or reserved address is refused when the key is saved, and checked again on every request (Otari connects to the address it checked). Redirects are not followed.
+- Only providers that speak the OpenAI or Anthropic API through their own SDK, such as OpenAI, Anthropic, vLLM, Groq or Together, take a base URL.
+
+A model server on a private address is added by the gateway's operator as a [hosted provider](https://docs.otari.ai/self-hosting/providers/hosted-providers) instead.
+
+### Client arguments
+
+A key's client arguments are the few settings its provider's SDK needs beyond the key: `timeout` and `max_retries` for every provider, plus `region_name`, `aws_access_key_id`, `aws_secret_access_key` and `aws_session_token` for Bedrock, `bill_to` for Hugging Face, `organization` and `project` for OpenAI, `api_version` for Azure OpenAI, `resource` for Azure Anthropic, `project` and `location` for Vertex AI, and `project_id` and `region` for Vertex AI Anthropic. Any other name is refused when the key is saved, and a key saved with one before is served without it.
+
 ## Set a default key per provider
 
 If you have multiple keys for the same provider, mark one as the default so workspaces inherit it automatically.
 
 1. On **Inference**, find the keys for the provider.
-2. Click **Make default provider** (the star icon) on the key you want workspaces to inherit.
+2. Open the menu at the end of the key you want workspaces to inherit, and choose **Make default provider**.
 
 ![Two OpenAI keys on the Inference page, production marked as the default.](assets/screenshots/manage-provider-keys-list.png)
 
@@ -73,6 +84,8 @@ A row you changed is marked Customized, and Reset in its menu returns it to the 
 
 **Require zero data retention**, at the top of the tab, limits the workspace to providers declared to keep no prompts or completions; see [Zero data retention](https://docs.otari.ai/self-hosting/providers/hosted-providers#zero-data-retention). Other providers are then refused, and the workspace's model lists show only declared ones.
 
+**Allowed data locations**, beside it, limits the workspace's hosted providers to regions declared to keep data in the countries or zones you choose; see [Data location](https://docs.otari.ai/self-hosting/providers/hosted-providers#data-location). A request is then served by the first enabled region that keeps data there and serves the request's country, and a hosted provider with no such region is refused and left out of the workspace's model lists. It applies to the deployment's hosted providers only, not to your organization's own keys.
+
 ## Rotate a provider key
 
 Rotate a provider key by adding its replacement first. Keep the existing key active until requests succeed with the new credential. Provider keys are resolved at request time, so your application's API keys do not need changes during rotation.
@@ -82,16 +95,16 @@ Rotate a key when it has been compromised, or you suspect it has; when your orga
 1. Create a new API key in your provider's dashboard. Do not revoke the existing key yet.
 2. In otari.ai, select **Organization**, then **Providers**, then **Inference**.
 3. Click **Add provider key**. Select the same provider, enter a distinct **Name**, and paste the new API key.
-4. Set the new key as the provider's default by clicking **Make default provider** (its star icon).
+4. Set the new key as the provider's default: choose **Make default provider** from its row's menu.
 5. For each workspace that pins the old key, open it on **Workspaces**, select its **Providers** tab, and choose **Always use this key** from the new key's **More** menu.
-6. Send a test request from each affected workspace. Confirm it completes successfully, and not on a fallback, in the workspace's **Overview**, on its **Requests** tab.
+6. Send a test request from each affected workspace. Confirm it completes successfully, and not on a fallback, in the workspace's **Sessions**, on its **Requests** view.
 
 ### Remove the old key
 
 Once requests are flowing through the new key, revoke the old key in the upstream provider dashboard.
 
 1. Return to **Organization** → **Providers** → **Inference** in Otari.
-2. **Archive** the old provider key. An archived key can then be deleted.
+2. Choose **Archive** from the old provider key's menu, and confirm. An archived key can then be deleted.
 
 Update every workspace that pins the old key before revoking it, and every workspace that has the new key switched off: switch it on or pin it there. A workspace can continue using a pinned key even after you change the organization default.
 

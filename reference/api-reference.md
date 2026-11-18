@@ -2,7 +2,7 @@
 
 Otari serves an OpenAPI document at `/api/v1/openapi.json` and interactive API
 docs at `/api/v1/docs` by default. The repository also commits the generated
-[OpenAPI specification](https://github.com/mozilla-ai/otari/blob/145a3f6d99e8afda5e544c26c5271c7ebbd0cc4b/docs/public/openapi.json), the source of truth for paths,
+[OpenAPI specification](https://github.com/mozilla-ai/otari/blob/34e6eb30468eea22e7ead7dc8404537b7ee3aee2/docs/public/openapi.json), the source of truth for paths,
 parameters, and schemas.
 
 ## Base URL
@@ -874,7 +874,7 @@ for the tool's name or `*`, as a search does
 **Which URLs.** The workspace's web-access policy applies in full: its switch, and
 its allowed and blocked domain lists, which bind the URL asked for and, on the
 built-in fetcher, every redirect. A provider tool is held to the URL it reports
-finding the page at; DeepSeek, Exa and Tabstack report none, so a redirect they
+finding the page at; DeepSeek, Exa, Tabstack and You.com report none, so a redirect they
 follow escapes the lists (see [Fetch providers](tools.md#fetch-providers)).
 Whatever the lists say, a URL that names a private, loopback or link-local
 address is refused. The built-in fetcher also refuses a host that resolves to

@@ -25,8 +25,8 @@ routing:
 ```
 
 Callers send `model: fast`. If the first provider fails before any response is
-sent, Otari tries the fallback. The response keeps the policy name; the Overview's Requests
-and Usage tabs record the models that were attempted.
+sent, Otari tries the fallback. The response keeps the policy name; the Requests
+view of Sessions records the models that were attempted.
 
 ![Otari tries OpenAI first and moves to Anthropic when OpenAI returns a retryable error.](assets/routing-fallback-flow.webp)
 
@@ -165,7 +165,7 @@ routing:
         - mistral:mistral-small
 ```
 
-- A full candidate is skipped without being called. The Overview's Requests tab
+- A full candidate is skipped without being called. The Requests view of Sessions
   shows it in the request's routing plan as skipped, naming the limit that was
   full, and Prometheus counts it in `gateway_rate_limit_model_full{rule, model}`.
 - The limit lives on the model, not on the policy, so the model is skipped the
@@ -378,12 +378,15 @@ that candidate's provider:
   chain.
 - What a fallback spends counts against its own provider's budgets.
 
-In a plan with more than one candidate, a chat completion's `reasoning_effort`
-is left off each candidate that [models.dev](https://models.dev) says does not
-reason. A candidate models.dev does not describe gets it as asked.
-`response_format` is never left off; check each candidate's
+In a plan with more than one candidate, the reasoning hint is left off each
+candidate that [models.dev](https://models.dev) says does not reason: a chat
+completion's `reasoning_effort`, a response's `reasoning` and the
+`reasoning.encrypted_content` entry of its `include`, and a message's
+`thinking` and `output_config.effort`. A candidate models.dev does not
+describe gets them as asked. `response_format`, a response's `text.format` and
+a message's `output_config.format` are never left off; check each candidate's
 `supported_parameters` on `GET /api/v1/models` when building a policy that
-sends it.
+sends them.
 
 ## Failure behavior
 
